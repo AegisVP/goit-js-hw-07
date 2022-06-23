@@ -1,5 +1,5 @@
 import { galleryItems } from "./gallery-items.js";
-import * as basicLightbox from "basiclightbox";
+import * as basicLightbox from "https://cdn.jsdelivr.net/npm/basiclightbox@5.0.4/dist/basicLightbox.min.js";
 // Change code below this line
 
 console.log(galleryItems);
