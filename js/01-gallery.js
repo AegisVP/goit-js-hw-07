@@ -5,50 +5,88 @@ console.log(galleryItems);
 
 const galleryRootEl = document.querySelector("div.gallery");
 const galleryHtmlMarkup = galleryItems.map(createImageCardMarkup).join("");
+let instanceModal;
 
 galleryRootEl.insertAdjacentHTML("afterbegin", galleryHtmlMarkup);
 galleryRootEl.addEventListener("click", onGalleryClick);
 
-let instance;
-let instanceEl;
-
 function createImageCardMarkup({ preview, original, description } = {}) {
 	return `
-  <div class="gallery__item">
-  <a class="gallery__link" href="${original}">
-    <img
-      class="gallery__image"
-      src="${preview}"
-      data-source="${original}"
-      alt="${description}"
-    />
-  </a>
-</div>`;
+			<div class="gallery__item">
+				<a class="gallery__link" href="${original}">
+					<img
+						class="gallery__image"
+						src="${preview}"
+						data-source="${original}"
+						alt="${description}"
+					/>
+				</a>
+			</div>`;
 }
 
 function onGalleryClick(e) {
 	e.preventDefault();
-	const src = e.target.dataset.source;
-	console.log("src", src);
+	openModalImage(e.target.dataset.source);
+}
 
-	instance = basicLightbox.create(
+function openModalImage(src) {
+	if (instanceModal?.visible()) {
+		instanceModal.close();
+	}
+
+	instanceModal = basicLightbox.create(
 		`<img src="${src}" width="1280" alt="original">`,
 		{
 			onClose: () => {
-				window.removeEventListener("keydown", onEscapeCloseModal);
+				window.removeEventListener("keydown", onKeyboardClick);
 			},
 		}
 	);
-	instance.show();
-	instanceEl = instance.element();
-	console.log("instanceEl", instanceEl);
-
-	window.addEventListener("keydown", onEscapeCloseModal);
+	instanceModal.show();
+	window.addEventListener("keydown", onKeyboardClick);
+	// console.log(instanceModal.element().querySelector('img').src);
 }
 
-function onEscapeCloseModal(e) {
-	if (e.code === "Escape") return;
+function closeModal() {
+	instanceModal.close();
+}
 
-	console.log(e.code);
-	instance.close();
+function onKeyboardClick(e) {
+	const oldSrcIndex = findCurrentSrcIndex(
+		instanceModal.element().querySelector("img").src
+	);
+	let newSrcIndex;
+
+	console.log("oldSrcIndex", oldSrcIndex);
+
+	switch (e?.code) {
+		case "Escape":
+			closeModal();
+			return;
+
+		case "ArrowLeft":
+		case "ArrowDown":
+			openModalImage(
+				galleryItems[
+					oldSrcIndex === 0 ? galleryItems.length - 1 : oldSrcIndex - 1
+				].original
+			);
+			break;
+
+		case "ArrowRight":
+		case "ArrowUp":
+			openModalImage(
+				galleryItems[
+					oldSrcIndex === galleryItems.length - 1 ? 0 : oldSrcIndex + 1
+				].original
+			);
+			break;
+	}
+}
+
+function findCurrentSrcIndex(src) {
+	for (let i = 0; i < galleryItems.length; i += 1) {
+		if (galleryItems[i].original === src) return i;
+	}
+	return;
 }
