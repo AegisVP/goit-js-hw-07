@@ -1,5 +1,4 @@
 import { galleryItems } from "./gallery-items.js";
-// import * as basicLightbox from "https://cdn.jsdelivr.net/npm/basiclightbox@5/dist/basicLightbox.min.js";
 // Change code below this line
 
 console.log(galleryItems);
@@ -35,7 +34,9 @@ function onGalleryClick(e) {
 	instance = basicLightbox.create(
 		`<img src="${src}" width="1280" alt="original">`,
 		{
-			onClose: () => {window.removeEventListener("keydown", onEscapeCloseModal);},
+			onClose: () => {
+				window.removeEventListener("keydown", onEscapeCloseModal);
+			},
 		}
 	);
 	instance.show();
