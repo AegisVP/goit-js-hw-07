@@ -1,5 +1,5 @@
 import { galleryItems } from "./gallery-items.js";
-import * as basicLightbox from "https://cdn.jsdelivr.net/npm/basiclightbox@5.0.4/dist/basicLightbox.min.js";
+// import * as basicLightbox from "https://cdn.jsdelivr.net/npm/basiclightbox@5/dist/basicLightbox.min.js";
 // Change code below this line
 
 console.log(galleryItems);
@@ -9,6 +9,9 @@ const galleryHtmlMarkup = galleryItems.map(createImageCardMarkup).join("");
 
 galleryRootEl.insertAdjacentHTML("afterbegin", galleryHtmlMarkup);
 galleryRootEl.addEventListener("click", onGalleryClick);
+
+let instance;
+let instanceEl;
 
 function createImageCardMarkup({ preview, original, description } = {}) {
 	return `
@@ -27,8 +30,24 @@ function createImageCardMarkup({ preview, original, description } = {}) {
 function onGalleryClick(e) {
 	e.preventDefault();
 	const src = e.target.dataset.source;
-	console.log(src);
+	console.log("src", src);
 
-	const instance = basicLightbox.create();
-	console.log("instance", instance);
+	instance = basicLightbox.create(
+		`<img src="${src}" width="1280" alt="original">`,
+		{
+			onClose: () => {window.removeEventListener("keydown", onEscapeCloseModal);},
+		}
+	);
+	instance.show();
+	instanceEl = instance.element();
+	console.log("instanceEl", instanceEl);
+
+	window.addEventListener("keydown", onEscapeCloseModal);
+}
+
+function onEscapeCloseModal(e) {
+	if (e.code === "Escape") return;
+
+	console.log(e.code);
+	instance.close();
 }
