@@ -74,6 +74,7 @@ function onKeyboardClick(e) {
 
 		case "ArrowRight":
 		case "ArrowUp":
+		case "Space":
 			openModalImage(
 				galleryItems[
 					oldSrcIndex === galleryItems.length - 1 ? 0 : oldSrcIndex + 1
