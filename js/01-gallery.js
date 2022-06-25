@@ -55,7 +55,6 @@ function onKeyboardClick(e) {
 	const oldSrcIndex = findCurrentSrcIndex(
 		instanceModal.element().querySelector("img").src
 	);
-	let newSrcIndex;
 
 	console.log("oldSrcIndex", oldSrcIndex);
 
